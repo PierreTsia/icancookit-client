@@ -9,12 +9,11 @@ import ApolloClient from "apollo-boost";
 import VueApollo from "vue-apollo";
 import Vuetify from "vuetify";
 import "vuetify/dist/vuetify.min.css";
-import VueCompositionApi from '@vue/composition-api';
+import VueCompositionApi from "@vue/composition-api";
 
 Vue.use(VueCompositionApi);
 Vue.use(Vuetify);
 Vue.use(VueApollo);
-
 
 const API_URI =
   process.env.NODE_ENV === "production"

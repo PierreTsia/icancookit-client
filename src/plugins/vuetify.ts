@@ -9,19 +9,17 @@ export default new Vuetify({
     locales: { fr },
     current: "fr"
   },
-  theme:{
-    themes:{
-      light:{
-        primary: '#E53935',
-        secondary: '#E53935',
-        accent: '#E53935',
-        error: '#E53935',
-        background: '#E53935',
+  theme: {
+    themes: {
+      light: {
+        primary: "#E53935",
+        secondary: "#E53935",
+        accent: "#E53935",
+        error: "#E53935",
+        background: "#E53935",
         grey: "#F4F5F7",
         darkgrey: "#E2E4E9"
       }
-
     }
-
   }
 });
