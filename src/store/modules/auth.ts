@@ -1,11 +1,22 @@
 import * as types from "../mutation-types";
 import { defaultClient as apolloClient } from "../../main";
-import { SIGNUP_USER } from "@/queries";
+import { SIGNUP_USER, SIGNIN_USER } from "@/api";
 
-import router from "../../router";
+const formatError = (error: GqlError | null) => {
+  return error
+    ? {
+        ...error,
+        message: error?.message.replace("GraphQL error: ", "")
+      }
+    : null;
+};
+interface GqlError {
+  name: string;
+  message: string;
+}
 interface AuthModuleState {
   currentUser: any;
-  error: any;
+  error: GqlError | null;
 }
 
 interface SignupPayload {
@@ -20,7 +31,7 @@ export const state = {
 };
 const getters = {
   isAuth: (state: AuthModuleState) => !!state.currentUser,
-  authError: (state: AuthModuleState) => state.error,
+  authError: (state: AuthModuleState) => formatError(state.error),
   me: (state: AuthModuleState) => state.currentUser
 };
 export const actions = {
@@ -29,7 +40,6 @@ export const actions = {
     commit(types.SET_CURRENT_USER, null);
     await apolloClient.resetStore();
     commit(types.SET_LOG_OUT_SUCCESS);
-    await router.push("/login");
   },
   signup: async ({ commit }: { commit: Function }, payload: SignupPayload) => {
     try {
@@ -46,10 +56,26 @@ export const actions = {
       const { message, name } = e;
       commit(types.SET_AUTH_ERROR, { message, name });
     }
+  },
+  signin: async ({ commit }: { commit: Function }, payload: SignupPayload) => {
+    try {
+      const { data } = await apolloClient.mutate({
+        mutation: SIGNIN_USER,
+        variables: payload
+      });
+      const { token, user } = data.signin;
+      localStorage.setItem("token", token);
+      commit(types.SET_LOGIN_SUCCESS, user);
+    } catch (e) {
+      //eslint-disable-next-line
+      console.warn(e);
+      const { message, name } = e;
+      commit(types.SET_AUTH_ERROR, { message, name });
+    }
   }
 };
 export const mutations = {
-  [types.SET_AUTH_ERROR]: (state: AuthModuleState, error: any) =>
+  [types.SET_AUTH_ERROR]: (state: AuthModuleState, error: GqlError) =>
     (state.error = error),
   [types.SET_CURRENT_USER]: (state: AuthModuleState, user: any) =>
     (state.currentUser = user),
@@ -57,8 +83,6 @@ export const mutations = {
     (state.currentUser = null),
   [types.SET_LOGIN_SUCCESS]: (state: AuthModuleState, user: any) =>
     (state.currentUser = user),
-  [types.SET_AUTH_ERROR]: (state: AuthModuleState, error: any) =>
-    (state.error = error),
   [types.CLEAR_ERRORS]: (state: AuthModuleState) => (state.error = null)
 };
 export default {

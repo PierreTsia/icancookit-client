@@ -1,17 +1,10 @@
 <template>
-  <v-container class="signUp grey lighten-5 d-flex align-center">
+  <v-container class="signIn grey lighten-5 d-flex align-center">
     <v-row no-gutters>
       <v-col cols="12" offset="0" lg="6" offset-lg="3" align="center">
-        <v-card class="login pa-4 mx-auto">
+        <v-card class="pa-4 mx-auto">
           <slot name="alert" />
           <v-form ref="form" v-model="valid" lazy-validation>
-            <v-text-field
-              class="input"
-              v-model="handle"
-              :rules="handleRules"
-              label="User Name"
-              required
-            ></v-text-field>
             <v-text-field
               class="input"
               v-model="email"
@@ -27,14 +20,6 @@
               label="Password"
               required
             ></v-text-field>
-            <v-text-field
-              class="input"
-              v-model="password2"
-              :rules="password2Rules"
-              type="password"
-              label="Confirm password"
-              required
-            ></v-text-field>
             <v-btn
               :disabled="!valid"
               rounded
@@ -43,7 +28,7 @@
               class="btn--validate ma-4"
               @click.native="handleValidateClick"
             >
-              Sign Up
+              Sign In
             </v-btn>
 
             <v-btn
@@ -58,10 +43,10 @@
             </v-btn>
           </v-form>
           <v-card-subtitle
-            class="signup__footer"
-            @click="$emit('onSetActiveAuthProcess', authProcess.LOGIN)"
-            >Already have an account ? Click here to
-            <span class="secondary--text"> Login </span></v-card-subtitle
+            class="signIn__footer"
+            @click="$emit('onSetActiveAuthProcess', authProcess.SIGNUP)"
+            >Don't have an account yet ? Click here to
+            <span class="secondary--text"> Sign up </span></v-card-subtitle
           >
         </v-card>
       </v-col>
@@ -73,7 +58,7 @@ import { ref, Ref, SetupContext } from "@vue/composition-api";
 import { useSignUp, AuthProcess } from "@/hooks/auth";
 
 export default {
-  name: "SignUp",
+  name: "SignIn",
   setup(props: any, { root }: SetupContext) {
     const { $store } = root;
     const authProcess = AuthProcess;
@@ -82,12 +67,10 @@ export default {
     const handle: Ref<string> = ref("");
     const email: Ref<string> = ref("");
     const password: Ref<string> = ref("");
-    const password2: Ref<string> = ref("");
     const handleValidateClick = async () => {
       $store.commit("CLEAR_ERRORS");
       if (form.value.validate()) {
-        await $store.dispatch("signup", {
-          handle: handle.value,
+        await $store.dispatch("signin", {
           email: email.value,
           password: password.value
         });
@@ -99,12 +82,11 @@ export default {
       form.value.reset();
     };
 
-    const {
-      handleRules,
-      passwordRules,
-      password2Rules,
-      emailRules
-    } = useSignUp(handle, email, password);
+    const { handleRules, passwordRules, emailRules } = useSignUp(
+      handle,
+      email,
+      password
+    );
 
     return {
       authProcess,
@@ -113,10 +95,8 @@ export default {
       handle,
       email,
       password,
-      password2,
       handleRules,
       passwordRules,
-      password2Rules,
       emailRules,
       handleValidateClick,
       handleResetClick
@@ -125,7 +105,7 @@ export default {
 };
 </script>
 <style lang="stylus">
-.signUp
-  .signup__footer
+.signIn
+  .signIn__footer
     cursor pointer
 </style>

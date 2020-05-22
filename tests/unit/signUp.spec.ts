@@ -54,7 +54,15 @@ describe("SignUp.ts.vue", () => {
   let wrapper: Wrapper<any>;
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = mount(SignUp, { localVue, vuetify });
+    wrapper = mount(SignUp, {
+      localVue,
+      vuetify,
+      mocks: {
+        $store: {
+          commit: () => jest.fn()
+        }
+      }
+    });
   });
 
   it("should display an input for signup required infos", () => {

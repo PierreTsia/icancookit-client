@@ -1,20 +1,49 @@
 <template>
   <div class="home">
-    <SignUp />
+    <component
+      v-if="!$store.getters.isAuth"
+      :is="activeAuthComponent"
+      @onSetActiveAuthProcess="handleSetActiveProcess"
+    >
+      <template slot="alert">
+        <v-alert
+          v-if="$store.getters.authError"
+          dense
+          outlined
+          type="error"
+          class="home__error"
+        >
+          {{ $store.getters.authError.message }}
+        </v-alert>
+      </template>
+    </component>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, SetupContext } from "@vue/composition-api";
+import { SetupContext, ref, Ref, computed } from "@vue/composition-api";
+import { AuthProcess } from "@/hooks/auth";
 import SignUp from "@/components/SignUp.ts.vue";
+import SignIn from "@/components/SignIn.ts.vue";
 export default {
   name: "Home",
-  components: { SignUp },
-  setup(props: any, context: SetupContext) {
-    const test = ref("pouet");
-    console.log("setup", test.value);
-
-    return { test };
+  components: { SignUp, SignIn },
+  setup(props: any, { root }: SetupContext) {
+    const activeAuthProcess: Ref<AuthProcess> = ref(AuthProcess.SIGNUP);
+    const handleSetActiveProcess = (process: AuthProcess) => {
+      root.$store.commit("CLEAR_ERRORS");
+      activeAuthProcess.value = process;
+    };
+    const activeAuthComponent = computed(() => {
+      return activeAuthProcess.value === AuthProcess.SIGNUP
+        ? "SignUp"
+        : "SignIn";
+    });
+    return {
+      activeAuthProcess,
+      handleSetActiveProcess,
+      activeAuthComponent
+    };
   }
 };
 </script>
@@ -22,5 +51,6 @@ export default {
 .home
   height 100vh
   display flex
-  align-items center
+  flex-direction column
+  justify-content  center
 </style>
