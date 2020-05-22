@@ -28,3 +28,15 @@ export const SIGNIN_USER = gql`
     }
   }
 `;
+
+export const GET_CURRENT_USER = gql`
+  query {
+    getCurrentUser {
+      _id
+      handle
+      avatar
+      email
+      joinDate
+    }
+  }
+`;

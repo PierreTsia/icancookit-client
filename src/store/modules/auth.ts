@@ -1,6 +1,6 @@
 import * as types from "../mutation-types";
 import { defaultClient as apolloClient } from "../../main";
-import { SIGNUP_USER, SIGNIN_USER } from "@/api";
+import { SIGNUP_USER, SIGNIN_USER, GET_CURRENT_USER } from "@/api";
 
 const formatError = (error: GqlError | null) => {
   return error
@@ -71,6 +71,17 @@ export const actions = {
       console.warn(e);
       const { message, name } = e;
       commit(types.SET_AUTH_ERROR, { message, name });
+    }
+  },
+  getCurrentUser: async ({ commit }: { commit: Function }) => {
+    try {
+      const { data } = await apolloClient.query({ query: GET_CURRENT_USER });
+      commit(types.SET_CURRENT_USER, data.getCurrentUser);
+    } catch (e) {
+      //eslint-disable-next-line
+      console.warn(e);
+      /* const { message, name } = e;
+      commit(types.SET_AUTH_ERROR, { message, name });*/
     }
   }
 };
