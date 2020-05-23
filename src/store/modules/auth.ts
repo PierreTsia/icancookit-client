@@ -80,6 +80,8 @@ export const actions = {
     } catch (e) {
       //eslint-disable-next-line
       console.warn(e);
+      const { message, name } = e;
+      commit(types.SET_AUTH_ERROR, { message, name });
       /* const { message, name } = e;
       commit(types.SET_AUTH_ERROR, { message, name });*/
     }

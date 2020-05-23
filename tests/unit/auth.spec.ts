@@ -1,7 +1,7 @@
 import { createLocalVue, Wrapper, shallowMount, mount } from "@vue/test-utils";
 import SignUp from "@/components/SignUp.ts.vue";
 import SignIn from "@/components/SignIn.ts.vue";
-import Home from "@/views/Home.ts.vue";
+import Auth from "@/views/Auth.ts.vue";
 import { AuthProcess } from "@/hooks/auth";
 import vuex from "vuex";
 import Vue from "vue";
@@ -12,7 +12,7 @@ Vue.use(Vuetify);
 
 const localVue = createLocalVue();
 localVue.use(vuex);
-describe("Home.ts.vue", () => {
+describe("Auth.ts.vue", () => {
   let vuetify: any;
   let wrapper: Wrapper<any>;
   const mockStore = (isAuth: boolean, error: any = null) =>
@@ -22,14 +22,21 @@ describe("Home.ts.vue", () => {
         authError: () => error
       }
     });
+  const mocks = {
+    $router: {
+      push: () => jest.fn()
+    },
+    $store: {
+      commit: () => jest.fn(),
+      getters: {
+        isAuth: () => false
+      }
+    }
+  };
   beforeEach(() => {
     vuetify = new Vuetify();
-    wrapper = shallowMount(Home, {
-      mocks: {
-        $store: {
-          commit: () => jest.fn()
-        }
-      },
+    wrapper = shallowMount(Auth, {
+      mocks,
       localVue,
       vuetify,
       store: mockStore(false)
@@ -55,7 +62,8 @@ describe("Home.ts.vue", () => {
   });
 
   it("should display none of auth components if user is Auth", async () => {
-    const wrapper = shallowMount(Home, {
+    const wrapper = shallowMount(Auth, {
+      mocks,
       localVue,
       vuetify,
       store: mockStore(true)
@@ -73,7 +81,8 @@ describe("Home.ts.vue", () => {
     }display error message in a v-alert if getter authError is ${
       hasAuthError ? "not " : ""
     } null`, () => {
-      const wrapper = mount(Home, {
+      const wrapper = mount(Auth, {
+        mocks,
         localVue,
         vuetify,
         store: mockStore(false, error)

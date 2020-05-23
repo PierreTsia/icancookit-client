@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.ts.vue";
+import Auth from "../views/Auth.ts.vue";
 import authguard from "@/router/authguard";
 
 Vue.use(VueRouter);
@@ -10,6 +11,12 @@ const routes: Array<RouteConfig> = [
     path: "/",
     name: "Home",
     component: Home,
+    beforeEnter: authguard
+  },
+  {
+    path: "/login",
+    name: "Auth",
+    component: Auth,
     beforeEnter: authguard
   },
   {
