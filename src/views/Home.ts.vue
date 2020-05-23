@@ -5,10 +5,21 @@
 </template>
 
 <script lang="ts">
-export default {
+import { watch, defineComponent } from "@vue/composition-api";
+
+const Home = defineComponent({
   name: "Home",
-  components: {}
-};
+  components: {},
+  setup(props, { root }) {
+    watch(
+      () => root.$store.getters.isAuth,
+      isAuth => {
+        if (!isAuth) root.$router.push("/login");
+      }
+    );
+  }
+});
+export default Home;
 </script>
 <style lang="stylus">
 .home
