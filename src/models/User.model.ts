@@ -1,5 +1,7 @@
 import { As } from "@/models/common";
 
+export type UserId = string & As<"UserId">;
+
 export interface UserInterface {
   _id: UserId;
   handle: string;
@@ -8,7 +10,6 @@ export interface UserInterface {
   joinDate: Date;
 }
 
-export type UserId = string & As<"UserId">;
 export class User {
   public _id: UserId;
   public handle: string;
