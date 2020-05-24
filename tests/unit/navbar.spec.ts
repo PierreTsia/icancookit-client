@@ -4,6 +4,8 @@ import vuex from "vuex";
 import Vue from "vue";
 import Vuetify from "vuetify";
 import VueCompositionApi from "@vue/composition-api";
+import { USER_FACTORY } from "./factories/User.factory";
+
 Vue.use(VueCompositionApi);
 Vue.use(Vuetify);
 
@@ -15,13 +17,12 @@ const mocks = {
   }
 };
 
+const me = USER_FACTORY.getSingleRecord();
+
 const store = new vuex.Store({
   getters: {
     isAuth: () => true,
-    me: () => ({
-      avatar: "mock-avatar",
-      displayName: "test_user"
-    })
+    me: () => me
   }
 });
 
@@ -37,5 +38,14 @@ describe("Navbar.vue", () => {
     const logoutBtn = wrapper.find(".navbar__logout");
     logoutBtn.trigger("click");
     expect(logoutSpy).toHaveBeenCalledWith("logout");
+  });
+
+  it("should display user avatar", () => {
+    const wrapper: Wrapper<any> = mount(Navbar, {
+      localVue,
+      store,
+      mocks
+    });
+    expect(wrapper.find("img").attributes("src")).toEqual(me.avatar);
   });
 });

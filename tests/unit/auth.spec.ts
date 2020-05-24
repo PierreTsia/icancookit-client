@@ -43,22 +43,22 @@ describe("Auth.ts.vue", () => {
     });
   });
 
-  it("should display the signUp component by default", () => {
+  it("should display the signIn component by default", () => {
     const signUp = wrapper.find(SignUp);
     const signIn = wrapper.find(SignIn);
-    expect(signUp.isVisible()).toBeTruthy();
-    expect(signIn.exists()).toBeFalsy();
+    expect(signIn.isVisible()).toBeTruthy();
+    expect(signUp.exists()).toBeFalsy();
   });
   it("should toggle between auth components when @onSetActiveAuthProcess is emitted", async () => {
-    const signUp = wrapper.find(SignUp);
-    expect(wrapper.vm.$data.activeAuthProcess).toEqual(AuthProcess.SIGNUP);
-    expect(wrapper.vm.$data.activeAuthComponent).toEqual("SignUp");
-
-    signUp.vm.$emit("onSetActiveAuthProcess", AuthProcess.LOGIN);
-    wrapper.vm.$nextTick();
-
+    const signIn = wrapper.find(SignIn);
     expect(wrapper.vm.$data.activeAuthProcess).toEqual(AuthProcess.LOGIN);
     expect(wrapper.vm.$data.activeAuthComponent).toEqual("SignIn");
+
+    signIn.vm.$emit("onSetActiveAuthProcess", AuthProcess.SIGNUP);
+    wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.$data.activeAuthProcess).toEqual(AuthProcess.SIGNUP);
+    expect(wrapper.vm.$data.activeAuthComponent).toEqual("SignUp");
   });
 
   it("should display none of auth components if user is Auth", async () => {
