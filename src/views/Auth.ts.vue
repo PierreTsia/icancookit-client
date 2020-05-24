@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { SetupContext, ref, Ref, computed, watch } from "@vue/composition-api";
+import { SetupContext, ref, Ref, computed } from "@vue/composition-api";
 import { AuthProcess } from "@/hooks/auth";
 import SignUp from "@/components/SignUp.ts.vue";
 import SignIn from "@/components/SignIn.ts.vue";
@@ -29,7 +29,7 @@ export default {
   name: "Auth",
   components: { SignUp, SignIn },
   setup(props: any, { root }: SetupContext) {
-    const activeAuthProcess: Ref<AuthProcess> = ref(AuthProcess.SIGNUP);
+    const activeAuthProcess: Ref<AuthProcess> = ref(AuthProcess.LOGIN);
     const handleSetActiveProcess = (process: AuthProcess) => {
       root.$store.commit("CLEAR_ERRORS");
       activeAuthProcess.value = process;
@@ -39,13 +39,6 @@ export default {
         ? "SignUp"
         : "SignIn";
     });
-
-    watch(
-      () => root.$store.getters.isAuth,
-      isAuth => {
-        if (isAuth) root.$router.push("/");
-      }
-    );
 
     return {
       activeAuthProcess,

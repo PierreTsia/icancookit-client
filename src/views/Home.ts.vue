@@ -1,30 +1,23 @@
 <template>
-  <div class="home">
-    <h1>HOME</h1>
-  </div>
+  <v-container fluid class="home">
+    <Search />
+  </v-container>
 </template>
 
 <script lang="ts">
-import { watch, defineComponent } from "@vue/composition-api";
+import { defineComponent } from "@vue/composition-api";
+import Search from "@/components/Search.ts.vue";
 
 const Home = defineComponent({
   name: "Home",
-  components: {},
-  setup(props, { root }) {
-    watch(
-      () => root.$store.getters.isAuth,
-      isAuth => {
-        if (!isAuth) root.$router.push("/login");
-      }
-    );
-  }
+  components: { Search }
 });
 export default Home;
 </script>
 <style lang="stylus">
 .home
-  height 100vh
+  height calc(100vh - 48px)
   display flex
   flex-direction column
-  justify-content  center
+  justify-content  flex-start
 </style>

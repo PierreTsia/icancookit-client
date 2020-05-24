@@ -1,6 +1,7 @@
 import * as types from "../mutation-types";
 import { defaultClient as apolloClient } from "../../main";
 import { SIGNUP_USER, SIGNIN_USER, GET_CURRENT_USER } from "@/api";
+import router from "@/router/index";
 
 const formatError = (error: GqlError | null) => {
   return error
@@ -40,6 +41,7 @@ export const actions = {
     commit(types.SET_CURRENT_USER, null);
     await apolloClient.resetStore();
     commit(types.SET_LOG_OUT_SUCCESS);
+    await router.push("/login");
   },
   signup: async ({ commit }: { commit: Function }, payload: SignupPayload) => {
     try {
@@ -50,6 +52,7 @@ export const actions = {
       const { token, user } = data.signup;
       localStorage.setItem("token", token);
       commit(types.SET_LOGIN_SUCCESS, user);
+      await router.push("/");
     } catch (e) {
       //eslint-disable-next-line
       console.warn(e);
@@ -59,6 +62,7 @@ export const actions = {
   },
   signin: async ({ commit }: { commit: Function }, payload: SignupPayload) => {
     try {
+      localStorage.setItem("token", "");
       const { data } = await apolloClient.mutate({
         mutation: SIGNIN_USER,
         variables: payload
@@ -66,6 +70,7 @@ export const actions = {
       const { token, user } = data.signin;
       localStorage.setItem("token", token);
       commit(types.SET_LOGIN_SUCCESS, user);
+      await router.push("/");
     } catch (e) {
       //eslint-disable-next-line
       console.warn(e);
